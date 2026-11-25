@@ -84,7 +84,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chip b{color:var(--fg)}
 
 /* персонажи */
-.heroes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.heroes{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.heroes .face{flex:0 0 calc((100% - 48px)/4)}
+@media (max-width:760px){.heroes{gap:12px}.heroes .face{flex-basis:calc((100% - 12px)/2)}}
 .face{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
 .face img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
 .face .cap{padding:13px 15px 15px}
@@ -304,6 +306,9 @@ details[open]>ul,details[open]>p{animation:drop .45s var(--ease) both}
       <figure class="face" style="margin:0"><img src="img/hero-melek.jpg" alt="Мелек, персонаж ИИ-сериала «35 лет взаперти»" loading="lazy"><figcaption class="cap"><span>35 лет взаперти</span><b>Мелек</b></figcaption></figure>
       <figure class="face" style="margin:0"><img src="img/hero-zhemchuzhina.jpg" alt="Жемчужина, персонаж мини-сериала «Драгоценная месть»" loading="lazy"><figcaption class="cap"><span>мини-сериал</span><b>Драгоценная месть</b></figcaption></figure>
       <figure class="face" style="margin:0"><img src="img/hero-mirabel.jpg" alt="Мирабель, ИИ-персонаж" loading="lazy"><figcaption class="cap"><span>ИИ-персонаж</span><b>Мирабель</b></figcaption></figure>
+      <figure class="face" style="margin:0"><img src="img/hero-nechego-1.jpg" alt="Персонаж в серебряном костюме, мини-сериал «Нечего надеть»" loading="lazy"><figcaption class="cap"><span>мини-сериал</span><b>Нечего надеть</b></figcaption></figure>
+      <figure class="face" style="margin:0"><img src="img/hero-nechego-2.jpg" alt="Персонаж в розовом платье, мини-сериал «Нечего надеть»" loading="lazy"><figcaption class="cap"><span>мини-сериал</span><b>Нечего надеть</b></figcaption></figure>
+      <figure class="face" style="margin:0"><img src="img/hero-nechego-3.jpg" alt="Персонаж во фраке с золотом, мини-сериал «Нечего надеть»" loading="lazy"><figcaption class="cap"><span>мини-сериал</span><b>Нечего надеть</b></figcaption></figure>
     </div>
   </div>
 </section>
