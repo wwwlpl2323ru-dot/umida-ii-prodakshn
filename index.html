@@ -1,6 +1,7 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>ИИ-продакшн · курс Умиды</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%93%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="fonts.css">
 <style>
 /* Тёплый розовый свет: кремовый фон, малиновый акцент, белые карточки с мягкой тенью */
@@ -147,7 +148,102 @@ footer{border-top:1px solid var(--line);padding-block:36px;color:var(--muted);fo
 footer .wrap{display:grid;gap:12px}
 .fin{display:flex;flex-wrap:wrap;gap:18px}
 mark{background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:6px;font-size:12.5px;font-weight:700}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== движение и отклик ===== */
+:root{--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{overflow-x:clip}
+
+/* полоса прогресса чтения */
+.progress{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:3px;z-index:11;pointer-events:none;background:linear-gradient(90deg,var(--accent),#ff9a6b);transform-origin:0 50%;transform:scaleX(0)}
+
+/* шапка уплотняется при прокрутке */
+.top{transition:box-shadow .3s var(--ease),background-color .3s}
+.top .wrap{transition:padding .3s var(--ease)}
+.top.scrolled{box-shadow:0 10px 30px -18px rgba(118,42,64,.45)}
+.top.scrolled .wrap{padding-block:8px}
+.logo .berry{transition:transform .5s var(--spring)}
+.logo:hover .berry{transform:rotate(-12deg) scale(1.1)}
+.nav a{position:relative;padding-block:4px;transition:color .2s}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:0 50%;transition:transform .35s var(--ease)}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.nav a.on{color:var(--fg)}
+
+/* кнопки */
+.btn{position:relative;overflow:hidden;isolation:isolate;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background-color .2s,border-color .2s}
+.btn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-110%);transition:transform .7s var(--ease)}
+.btn.ghost::after{background:linear-gradient(110deg,transparent 30%,color-mix(in srgb,var(--accent) 18%,transparent) 50%,transparent 70%)}
+.btn:active{transform:scale(.97)}
+@media (hover:hover){
+  .btn:hover{transform:translateY(-2px);box-shadow:0 22px 40px -20px color-mix(in srgb,var(--accent) 75%,transparent)}
+  .btn:hover::after{transform:translateX(110%)}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+}
+
+/* карточки, шаги, герои, тарифы: подъём при наведении */
+.card,.step,.face,.tier,.mod,.chip,.tool{transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .3s}
+.face img{transition:transform .8s var(--ease)}
+@media (hover:hover){
+  .card:hover,.step:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));box-shadow:0 26px 50px -28px rgba(118,42,64,.5)}
+  .face:hover{transform:translateY(-6px) rotate(-.6deg)}
+  .face:hover img{transform:scale(1.06)}
+  .tier:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(118,42,64,.55)}
+  .tier.main:hover{box-shadow:0 30px 70px -26px color-mix(in srgb,var(--accent) 60%,transparent)}
+  .chip:hover,.tool:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .mod:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+}
+.step-n{transition:transform .5s var(--spring),background-color .3s,color .3s}
+@media (hover:hover){.step:hover .step-n{transform:rotate(-8deg) scale(1.08);background:var(--accent);color:var(--accent-ink)}}
+.tier.main{position:relative}
+.tier.main::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--a,0deg),var(--accent),#ffb38a,var(--accent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s;pointer-events:none}
+@media (hover:hover){.tier.main:hover::before{opacity:1;animation:spin 3s linear infinite}}
+@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes spin{to{--a:360deg}}
+
+/* аккордеоны: плавное раскрытие */
+.chev{transition:transform .35s var(--ease),opacity .3s}
+.faq .chev{display:inline-block;font-size:18px;line-height:1}
+.faq details[open] .chev{transform:rotate(45deg)}
+.mod summary,.faq summary{transition:color .2s}
+.faq summary:hover{color:var(--accent)}
+details[open]>ul,details[open]>p{animation:drop .45s var(--ease) both}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mod ul li{transition:transform .25s var(--ease)}
+.mod ul li:hover{transform:translateX(4px)}
+
+/* первый экран: появление по очереди */
+.anim .hero .stack>*{animation:rise .9s var(--ease) both}
+.anim .hero .stack>*:nth-child(1){animation-delay:.05s}
+.anim .hero .stack>*:nth-child(2){animation-delay:.15s}
+.anim .hero .stack>*:nth-child(3){animation-delay:.28s}
+.anim .hero .stack>*:nth-child(4){animation-delay:.38s}
+.anim .hero .stack>*:nth-child(5){animation-delay:.48s}
+.anim .hero .stack>*:nth-child(6){animation-delay:.56s}
+.anim .hero .stack>*:nth-child(7){animation-delay:.64s}
+.anim .hero .shot img{animation:zoomIn 1.2s var(--ease) .15s both}
+.anim .hero .pin.a{animation:popIn .8s var(--spring) .9s both}
+.anim .hero .pin.b{animation:popIn .8s var(--spring) 1.1s both}
+.hero h1 em{background:linear-gradient(100deg,var(--accent) 0%,#ff9a6b 45%,var(--accent) 60%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 2.6s var(--ease) .6s both}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.94) rotate(1.5deg)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes shine{from{background-position:100% 0}to{background-position:0 0}}
+.shot{transition:transform .2s linear}
+.shot .pin{transition:translate .4s var(--ease)}
+
+/* появление блоков при прокрутке */
+.anim .rv{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+.anim .rv.in{opacity:1;transform:none}
+.anim .rv.zoom{transform:translateY(20px) scale(.96)}
+.anim .rv.zoom.in{transform:none}
+
+/* закреплённая кнопка на телефоне */
+.dock{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:12;display:none}
+.dock .btn{width:100%;padding:15px 20px}
+.top .btn{white-space:nowrap;margin-left:auto}
+@media(max-width:420px){.top .btn{padding:10px 14px;font-size:13px}.logo .berry{width:34px;height:34px}}
+@media(max-width:860px){.dock{display:block;transform:translateY(140%);transition:transform .45s var(--ease)}.dock.show{transform:none}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.hero h1 em{-webkit-text-fill-color:var(--accent);background:none}}
 </style>
 
 <div class="top">
@@ -437,4 +533,81 @@ mark{background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-ra
   </div>
 </footer>
 
+<div class="progress" aria-hidden="true"></div>
+<div class="dock"><a class="btn" href="#tarify">Выбрать формат</a></div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var io='IntersectionObserver' in window;
+  if(!still&&io) root.classList.add('anim');
+
+  // появление блоков: заголовки секций и карточки по очереди
+  if(!still&&io){
+    var groups=[['section .eyebrow, section h2, section > .wrap > .lead, .stack > .lead',0],
+      ['.heroes .face',.08],['.cards .card',.08],['.steps .step',.1],['.mod',.05],['.tiers .tier',.12],
+      ['.faq details',.04],['.about img',0],['.final',0],['#tarify .note',0]];
+    var seen=new Set();
+    groups.forEach(function(g){
+      var list=document.querySelectorAll(g[0]),i=0;
+      list.forEach(function(el){
+        if(seen.has(el)||el.closest('.hero'))return; seen.add(el);
+        el.classList.add('rv'); if(/face|tier|about|final/.test(g[0]))el.classList.add('zoom');
+        el.style.setProperty('--d',(Math.min(i++,6)*g[1])+'s');
+      });
+    });
+    var ob=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){reveal(e.target);ob.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px',threshold:.12});
+    // после появления снимаем служебные классы, чтобы наведение откликалось без задержки
+    function reveal(el){
+      if(el.classList.contains('in'))return; el.classList.add('in');
+      var d=parseFloat(el.style.getPropertyValue('--d'))||0;
+      setTimeout(function(){el.classList.remove('rv','zoom','in');el.style.removeProperty('--d')},(d+.9)*1000);
+    }
+    seen.forEach(function(el){ob.observe(el)});
+    // запасной вариант: через 4 с показать всё, что уже выше низа экрана
+    setTimeout(function(){seen.forEach(function(el){if(el.getBoundingClientRect().top<innerHeight)reveal(el)})},4000);
+  }
+
+  // шапка, прогресс, кнопка на телефоне, подсветка пункта меню
+  var top=document.querySelector('.top'),bar=document.querySelector('.progress'),dock=document.querySelector('.dock');
+  var hero=document.querySelector('.hero'),tar=document.getElementById('tarify');
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  var tick=false;
+  function onScroll(){
+    tick=false;
+    var y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
+    top.classList.toggle('scrolled',y>10);
+    bar.style.transform='scaleX('+(h>0?Math.min(y/h,1):0)+')';
+    var t=tar.getBoundingClientRect();
+    dock.classList.toggle('show',hero.getBoundingClientRect().bottom<0&&!(t.top<innerHeight&&t.bottom>0));
+    var cur=-1;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<innerHeight*.4)cur=i});
+    links.forEach(function(a,i){a.classList.toggle('on',i===cur)});
+  }
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});
+  onScroll();
+
+  if(still)return;
+
+  // счётчики в плашках: 5 модулей, 45 уроков
+  document.querySelectorAll('.hero .chip b').forEach(function(b){
+    var n=parseInt(b.textContent,10); if(!n)return; var t0=null; b.textContent='0';
+    function step(ts){t0=t0||ts;var p=Math.min((ts-t0)/1200,1);b.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)}
+    setTimeout(function(){requestAnimationFrame(step)},700);
+  });
+
+  // лёгкий объём картинки первого экрана за курсором (только мышь)
+  var shot=document.querySelector('.hero .shot');
+  if(shot&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+    var pins=shot.querySelectorAll('.pin');
+    shot.addEventListener('mousemove',function(e){
+      var r=shot.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      shot.style.transform='perspective(900px) rotateY('+(x*6)+'deg) rotateX('+(-y*6)+'deg)';
+      pins.forEach(function(p,i){var k=i?-14:14;p.style.translate=(x*k)+'px '+(y*k)+'px'});
+    });
+    shot.addEventListener('mouseleave',function(){shot.style.transform='';pins.forEach(function(p){p.style.translate=''})});
+  }
+})();
+</script>
 </body></html>
